@@ -1,0 +1,43 @@
+.sidebar {
+  width: 250px;
+  background: #e3dfe1;
+  color: white;
+  padding: 20px;
+}
+
+.logo {
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-item {
+  text-decoration: none;
+  color: #1e293b;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.menu-item:hover {
+  background: #334155;
+  color: white;
+}
+
+.menu-item.active {
+  background: #303b4c;
+  color: white;
+}
+.profile-pic {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+
+  border-radius: 19px; /* curved edges */
+  border: 2px solid #ddd;
+}
