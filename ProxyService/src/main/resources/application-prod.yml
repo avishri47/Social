@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: http://user-service
+              predicates:
+                - Path=/users/**
+
+            - id: order-service
+              uri: http://order-service
+              predicates:
+                - Path=/orders/**
