@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_USER_MANAGEMENT;
 export default function ProtectedRoute({ children }) {
   const [isAuth, setIsAuth] = useState(null);
 
   useEffect(() => {
     axios
-      .get("http://localhost:9000/auth/me", {
+      .get(`${BASE_URL}/auth/me`, {
         withCredentials: true,
       })
       .then(() => setIsAuth(true))

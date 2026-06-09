@@ -1,43 +1,106 @@
+/* =========================
+   SIDEBAR BASE (DESKTOP)
+========================= */
 .sidebar {
-  width: 250px;
-  background: #e3dfe1;
-  color: white;
-  padding: 20px;
+  width: 220px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 10px 0;
+  overflow-y: auto;
+  transition: transform 0.3s ease, width 0.3s ease;
+  z-index: 999;
+  box-sizing: border-box;
 }
 
-.logo {
-  margin-bottom: 30px;
-  font-size: 24px;
-}
-
-.menu {
+/* =========================
+   SIDEBAR ITEM
+========================= */
+.item {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #222;
+  transition: background 0.2s ease;
 }
 
-.menu-item {
-  text-decoration: none;
-  color: #1e293b;
-  padding: 12px 15px;
-  border-radius: 8px;
-  transition: 0.3s;
+.item:hover {
+  background: #f2f2f2;
 }
 
-.menu-item:hover {
-  background: #334155;
-  color: white;
+.item span {
+  white-space: nowrap;
 }
 
-.menu-item.active {
-  background: #303b4c;
-  color: white;
-}
-.profile-pic {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
+/* =========================
+   TABLET MODE (MINI SIDEBAR)
+========================= */
+@media (min-width: 601px) and (max-width: 900px) {
+  .sidebar {
+    width: 72px;
+  }
 
-  border-radius: 19px; /* curved edges */
-  border: 2px solid #ddd;
+  .item {
+    justify-content: center;
+    padding: 16px 0;
+  }
+
+  .item span {
+    display: none;
+  }
+}
+
+/* =========================
+   MOBILE MODE (NATIVE DRAWER)
+========================= */
+@media (max-width: 600px) {
+  .sidebar {
+    width: 240px;
+    height: 100vh;
+    top: 0;
+    z-index: 2000; /* Layers above the fixed header */
+    transform: translateX(-100%);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .item {
+    justify-content: flex-start;
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+
+  .item span {
+    display: inline !important;
+  }
+}
+
+/* =========================
+   OVERLAY
+========================= */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
 }

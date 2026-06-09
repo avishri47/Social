@@ -5,15 +5,18 @@ export default defineConfig({
   plugins: [react()],
 
   server: {
-    host: true, // allows external access (ngrok, LAN, etc.)
+    host: true,
 
     allowedHosts: [
       'galling-penelope-unsacramental.ngrok-free.dev'
     ],
 
-    cors: {
-      origin: 'https://galling-penelope-unsacramental.ngrok-free.dev',
-      credentials: true
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        secure: false
+      }
     }
   }
 })

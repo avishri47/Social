@@ -1,0 +1,43 @@
+/* RIGHT SIDEBAR */
+.rightBar {
+  width: 260px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px; /* below header */
+  right: 0;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* TITLE */
+.title {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+/* CARD ITEM */
+.card {
+  background: #f4f4f4;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.card:hover {
+  background: #e9e9e9;
+}
+
+/* ========================= */
+/* RESPONSIVE DESIGN */
+/* ========================= */
+
+/* Tablets */
+@media (max-width: 900px) {
+  .rightBar {
+    display: none; /* hide right sidebar */
+  }
+}

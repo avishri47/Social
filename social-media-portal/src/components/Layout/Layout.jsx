@@ -1,25 +1,21 @@
-import NotificationBar from "../Notification/NotificationBar";
-import SearchBox from "../Search/SearchBox";
+import React, { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import "./Layout.css";
 
-function Layout({ children }) {
+const Layout = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="layout">
-      <Sidebar />
+    <div className="app">
+   
 
-      <div className="right-section">
-        <div className="topbar">
-          <SearchBox />
-          <NotificationBar />
-        </div>
-
-        <main className="main-content">
-          {children}
-        </main>
+      <div className="container">
+        <Sidebar open={sidebarOpen} />
+ 
+        <main className="content">{children}</main>
+       
       </div>
     </div>
   );
-}
+};
 
 export default Layout;

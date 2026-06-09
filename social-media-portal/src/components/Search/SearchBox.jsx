@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./SearchBox.css";
 
 const SearchBox = () => {
   const [query, setQuery] = useState("");
@@ -9,7 +10,7 @@ const SearchBox = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       searchUsers();
-    }, 300); // debounce
+    }, 300);
 
     return () => clearTimeout(timeout);
   }, [query]);
@@ -22,11 +23,9 @@ const SearchBox = () => {
 
     try {
       setLoading(true);
-
       const response = await axios.get(
         `/api/users/search?query=${encodeURIComponent(query)}`
       );
-
       setUsers(response.data);
     } catch (error) {
       console.error("Search failed", error);
@@ -35,96 +34,77 @@ const SearchBox = () => {
     }
   };
 
-  return (
-    
-    <div >
-      <input
-        type="text"
-        placeholder="Search friends..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={styles.input}
-      />
+  const handleProfileNavigation = (userId) => {
+    window.location.href = `/profile/${userId}`;
+  };
 
+  return (
+    <div className="search-container">
+      {/* Material Input Field Box */}
+      <div className="search-field-box">
+        <span className="search-icon-left">🔍</span>
+        <input
+          type="text"
+          placeholder="Search friends..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="search-input"
+        />
+        {query && (
+          <button className="search-clear-btn" onClick={() => setQuery("")}>
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* Material Results Dropdown Drawer */}
       {query && (
-        <div style={styles.dropdown}>
-          {loading && <div style={styles.item}>Searching...</div>}
+        <div className="search-dropdown">
+          {loading && (
+            <div className="search-status-msg">
+              <div className="search-spinner"></div>
+              <span>Searching...</span>
+            </div>
+          )}
 
           {!loading &&
             users.map((user) => (
               <div
                 key={user.id}
-                style={styles.item}
-                onClick={() => {
-                  window.location.href = `/profile/${user.id}`;
+                className="search-item"
+                role="button"
+                tabIndex={0}
+                onClick={() => handleProfileNavigation(user.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleProfileNavigation(user.id);
+                  }
                 }}
               >
                 <img
-                  src={user.profilePic}
+                  src={user.profilePic || "https://via.placeholder.com/40"}
                   alt={user.name}
-                  style={styles.avatar}
+                  className="search-avatar"
+                  onError={(e) => {
+                    e.target.src = "https://via.placeholder.com/40";
+                  }}
                 />
 
-                <div>
-                  <div>{user.name}</div>
-                  <small>@{user.username}</small>
+                <div className="search-item-content">
+                  <div className="search-profile-name">{user.name}</div>
+                  <div className="search-profile-handle">@{user.username}</div>
                 </div>
               </div>
             ))}
 
           {!loading && users.length === 0 && (
-            <div style={styles.item}>No users found</div>
+            <div className="search-status-msg">No users found</div>
           )}
         </div>
       )}
     </div>
-    
-    
   );
-};
-
-const styles = {
-  container: {
-    position: "relative",
-    width: "350px",
-    margin: "10px auto",
-     
-  },
-  input: {
-    width: "400%",
-    padding: "19px 15px",
-    borderRadius: "25px",
-    border: "1px solid #ccc",
-    outline: "none"
-  },
-  
-  dropdown: {
-    position: "absolute",
-    top: "45px",
-    left: 0,
-    right: 0,
-    background: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    zIndex: 1000,
-    maxHeight: "400px",
-    overflowY: "auto"
-  },
-  item: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    padding: "10px",
-    cursor: "pointer",
-    borderBottom: "1px solid #f1f1f1"
-  },
-  avatar: {
-   width: "100%",
-  maxWidth: "40px",
-    height: "40px",
-    borderRadius: "50%"
-  }
 };
 
 export default SearchBox;

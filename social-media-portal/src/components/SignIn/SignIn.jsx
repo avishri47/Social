@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import userService from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({
-   
-    email: "",
-    
-    
-    password: "",
-    
-  });
+  const authCtx = useAuth();
   const navigate = useNavigate();
-const [isSuccess, setIsSuccess] = useState(false);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
-const [errMsg, setErrMessage] = useState("");
+  const [errMsg, setErrMessage] = useState("");
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,49 +26,49 @@ const [errMsg, setErrMessage] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const {  email,   password  } = formData;
+    const { email, password } = formData;
 
-    if (!email ) {
-      setErrMessage("provide the email");
+    if (!email) {
+      setErrMessage("Provide the email");
       return;
     }
 
     if (!password) {
-      setErrMessage("provide the password");
+      setErrMessage("Provide the password");
       return;
     }
 
+    try {
+      const payload = { email, password };
 
- try {
-    const payload = {
-     
-      email,
-      
-      password,
-    };
-setErrMessage(null);
-    const response = await userService.signin(payload);
+      setErrMessage("");
+      setMessage("");
 
-    console.log("SignIn Success:", response);
-   setErrMessage("");
-setIsSuccess(true);
-navigate("/");
-  } catch (error) {
-    setErrMessage(error);
-setMessage("");
-setIsSuccess(false);
-  }
+      const response = await userService.signin(payload);
 
+      // store only useful user data (safe fallback included)
+      authCtx.signin(response?.data?.user || response);
 
-    
+      console.log("SignIn Success:", response);
+
+      setIsSuccess(true);
+      setMessage("Login successful!");
+
+      navigate("/");
+    } catch (error) {
+      console.log("SignIn Error:", error);
+
+      // IMPORTANT FIX: never store raw Error object
+      setErrMessage(error?.message || "Login failed");
+      setMessage("");
+      setIsSuccess(false);
+    }
   };
 
   return (
     <div style={styles.container}>
       <form style={styles.card} onSubmit={handleSubmit}>
         <h2 style={styles.title}>Sign In to Your Feeds</h2>
-
-     
 
         <input
           type="email"
@@ -78,8 +79,6 @@ setIsSuccess(false);
           style={styles.input}
         />
 
-       
-
         <input
           type="password"
           name="password"
@@ -89,38 +88,24 @@ setIsSuccess(false);
           style={styles.input}
         />
 
-        
-       <button type="submit" style={styles.signInButton}>
+        <button type="submit" style={styles.signInButton}>
           Sign In
         </button>
 
-       {errMsg ? (
-  <p style={styles.err_msg}>{errMsg}</p>
-) : (
-  message && (
-    <div>
-      <p style={{ color: "green", fontWeight: "bold" }}>
-        {message}
-      </p>
+        {errMsg ? (
+          <p style={styles.err_msg}>{errMsg}</p>
+        ) : (
+          message && (
+            <p style={{ color: "green", fontWeight: "bold" }}>
+              {message}
+            </p>
+          )
+        )}
 
-      {/* {isSuccess && (
         <button
-          style={styles.signInButton}
-          onClick={() => alert("Redirect to Sign In")}
-        >
-          Sign In
-        </button>
-      )} */}
-    </div>
-  )
-)}
-
-         <button
+          type="button"
           style={styles.button}
-          onClick={() => {
-            navigate("/signup");
-          }
-          }
+          onClick={() => navigate("/signup")}
         >
           Are you new here
         </button>
@@ -163,10 +148,6 @@ const styles = {
     outline: "none",
   },
 
-  
-  
-
-
   button: {
     padding: "10px",
     fontSize: "16px",
@@ -178,28 +159,23 @@ const styles = {
     marginTop: "10px",
   },
 
-  message: {
-    marginTop: "10px",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: "#83c54d",
-  },
   err_msg: {
     marginTop: "10px",
     textAlign: "center",
     fontWeight: "bold",
     color: "#ed7872",
   },
+
   signInButton: {
-  marginTop: "10px",
-  fontSize: "16px",
-  padding: "8px 12px",
-  backgroundColor: "#1674ef",
-  color: "#fff",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-}
+    marginTop: "10px",
+    fontSize: "16px",
+    padding: "8px 12px",
+    backgroundColor: "#1674ef",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
 };
 
 export default SignIn;

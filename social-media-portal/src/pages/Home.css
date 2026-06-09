@@ -1,41 +1,104 @@
+/* =========================
+   HOME CONTAINER
+========================= */
+
 .home-container {
   width: 100%;
-  max-width: 270px;
-  margin: flex;
-  
+  max-width: 100%;
+  margin: 0 auto;
+
   font-family: Arial, sans-serif;
+  padding: 16px;
+  box-sizing: border-box;
 }
+
+/* =========================
+   TITLE
+========================= */
 
 h1 {
   text-align: center;
   margin-top: 10px;
 }
 
+/* =========================
+   HEADER
+   (FIXED overflow issue)
+========================= */
+
+.header {
+  background: rgba(90, 112, 138, 0.223);
+  border: 1px solid #848282;
+  border-radius: 5px;
+
+  width: 100%; /* FIXED (was 540%) */
+  max-width: 100%;
+
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* =========================
+   FEED (FIXED FLEX ISSUE)
+========================= */
+
 .feed {
   display: flex;
-  gap: 10px;
-  
-  margin-left: 40%;
-  width: fit-content;
+  flex-wrap: wrap; /* IMPORTANT FIX */
+
+  gap: 12px;
+
+  margin: 20px auto;
+  width: 100%;
+  justify-content: center; /* FIXED instead of margin-left */
+  box-sizing: border-box;
 }
+
+/* =========================
+   POST CARD
+========================= */
+
 .post-card {
   background: white;
   padding: 12px;
   border-radius: 12px;
+
   box-shadow: 0 2px 10px rgba(117, 31, 31, 0.247);
+
+  flex: 1 1 280px; /* responsive card sizing */
+  max-width: 320px;
 }
+
+/* =========================
+   MEDIA INSIDE POST
+========================= */
 
 .post-card img,
 .post-card video {
   width: 100%;
+  height: auto;
   border-radius: 10px;
   margin-top: 10px;
+  display: block;
 }
-.header {
-  background: rgba(90, 112, 138, 0.223);
- border: 1px solid #848282;
-  border-radius: 5px;
-    width: 540%;
-    padding: 27px;
-    
+
+/* =========================
+   MOBILE FIX
+========================= */
+
+@media (max-width: 768px) {
+
+  .feed {
+    flex-direction: column;
+    align-items: center;
   }
+
+  .post-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .header {
+    padding: 12px;
+  }
+}

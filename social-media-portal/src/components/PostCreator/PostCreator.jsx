@@ -1,122 +1,102 @@
-import { useState } from "react";
-import "./PostCreator.css";
+import React, { useState, useRef } from "react";
 
-function PostCreator({ onAddPost }) {
-  const [text, setText] = useState("");
-  const [media, setMedia] = useState(null);
-  const [open, setOpen] = useState(false);
+const PostCreator = ({ onPostSubmit }) => {
+  const [newPostText, setNewPostText] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const fileInputRef = useRef(null);
 
-  function handleMediaChange(e) {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) setMedia(file);
-  }
-
-  function handleSubmit() {
-    if (!text && !media) return;
-
-    let mediaUrl = null;
-    let mediaType = "text";
-
-    if (media) {
-      mediaUrl = URL.createObjectURL(media);
-      mediaType = media.type.startsWith("video") ? "video" : "image";
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
     }
+  };
 
-    const newPost = {
+  const handleSubmitPost = (e) => {
+    e.preventDefault();
+    if (!newPostText.trim() && !selectedImage) return;
+
+    const createdPost = {
       id: Date.now(),
-      text,
-      media: mediaUrl,
-      type: mediaType,
-      time: new Date().toLocaleString(),
+      author: {
+        name: "Current User",
+        username: "current_user",
+        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+        verified: false
+      },
+      timestamp: "Just now",
+      content: newPostText,
+      media: selectedImage,
+      likes: 0,
+      comments: 0,
+      hasLiked: false
     };
 
-    onAddPost(newPost);
-
-    setText("");
-    setMedia(null);
-    setOpen(false);
-  }
+    onPostSubmit(createdPost);
+    setNewPostText("");
+    setSelectedImage(null);
+  };
 
   return (
-    <>
-      {/* Clickable input preview */}
-      
-      <div className="post-trigger" onClick={() => setOpen(true)}>
-        What's on your mind?
-      </div>
-
-      {/* Modal */}
-      {open && (
-        <div className="modal-overlay">
-          <div className="post-box">
-            <div className="modal-header">
-              <h3>Create Post</h3>
-              <button
-                className="close-btn"
-                onClick={() => setOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <textarea
-              placeholder="What's on your mind?"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-
-            <input
-              id="mediaInput"
-              type="file"
-              accept="image/*,video/*"
-              onChange={handleMediaChange}
-              style={{ display: "none" }}
-            />
-
-            <div className="media-upload">
-  <label htmlFor="mediaInput" className="media-icon">
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 16V5"
-        stroke="#111827"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M8.5 8.5L12 5L15.5 8.5"
-        stroke="#111827"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4 16V19C4 19.552 4.448 20 5 20H19C19.552 20 20 19.552 20 19V16"
-        stroke="#111827"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  </label>
-
-  {media && (
-    <span className="file-name">
-      {media.name}
-    </span>
-  )}
-</div>
-
-            <button onClick={handleSubmit}>Post</button>
-          </div>
+    <div className="composer-card">
+      <form onSubmit={handleSubmitPost}>
+        <div className="composer-main-row">
+          <img 
+            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" 
+            alt="User profile" 
+            className="post-user-avatar" 
+          />
+          <textarea
+            placeholder="What's on your mind? Share an update or image..."
+            value={newPostText}
+            onChange={(e) => setNewPostText(e.target.value)}
+            rows="2"
+            className="composer-textarea"
+          />
         </div>
-      )}
-    </>
+
+        {selectedImage && (
+          <div className="composer-preview-container">
+            <img src={selectedImage} alt="Upload preview" className="composer-img-preview" />
+            <button 
+              type="button" 
+              className="composer-remove-img" 
+              onClick={() => setSelectedImage(null)}
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        <div className="composer-actions-row">
+          <input 
+            type="file" 
+            accept="image/*" 
+            ref={fileInputRef} 
+            onChange={handleImageChange} 
+            style={{ display: "none" }} 
+          />
+          
+          <button 
+            type="button" 
+            className="composer-action-btn"
+            onClick={() => fileInputRef.current.click()}
+          >
+            <span className="action-icon">🖼️</span>
+            <span className="composer-btn-label">Media</span>
+          </button>
+
+          <button 
+            type="submit" 
+            className="composer-submit-btn"
+            disabled={!newPostText.trim() && !selectedImage}
+          >
+            Post
+          </button>
+        </div>
+      </form>
+    </div>
   );
-}
+};
 
 export default PostCreator;

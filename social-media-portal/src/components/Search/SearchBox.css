@@ -1,0 +1,233 @@
+/* =========================
+   SEARCH CONTAINER
+========================= */
+.search-container {
+  position: relative;
+  width: 100%;
+  
+  /* LINKEDIN EXPANSION: Starts compact, stretches smoothly on focus */
+  max-width: 250px;
+  transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.search-container:focus-within {
+  max-width: 380px;
+}
+
+/* =========================
+   LINKEDIN STYLE PILL FIELD BAR
+========================= */
+.search-field-box {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #dfd9e3e8; /* LinkedIn slate tint */
+  
+  /* PERFECT PILL CURVE */
+  border-radius: 70px; 
+  
+  height: 36px;
+  padding: 0 12px 0 16px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Hover state */
+.search-field-box:hover {
+  background-color: #d2d9e0;
+}
+
+/* Focused state layout */
+.search-field-box:focus-within {
+  background-color: #e1d5d5;
+  background-clip: padding-box;
+  
+  /* Premium dark accent ring following the pill contour */
+  box-shadow: 0 0 0 1px #3d48255e; 
+}
+
+/* Left Magnifying glass icon */
+.search-icon-left {
+  font-size: 14px;
+  color: #666666;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.search-field-box:focus-within .search-icon-left {
+  color: #c33131;
+}
+
+/* Core native input tag styling */
+.search-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #191919;
+  padding: 0;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: #666666;
+  font-weight: 400;
+}
+
+/* Clear X Button button layout */
+.search-clear-btn {
+  border: none;
+  background: transparent;
+  color: #666666;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  transition: background-color 0.1s ease;
+}
+
+.search-clear-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #191919;
+}
+
+/* =========================
+   ROUNDED ELEVATED DROPDOWN
+========================= */
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  
+  /* CURVED CHASSIS FOR THE MENU PANELS */
+  border-radius: 16px; 
+  
+  /* Elegant depth shadow layer */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 
+              0 8px 16px -6px rgba(0, 0, 0, 0.12);
+              
+  z-index: 1010;
+  max-height: 360px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 6px; /* Inner clearance for nested squircle list selections */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================
+   DROPDOWN LIST ROWS
+========================= */
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  
+  /* SQUIRCLE ITEM HIGHLIGHTS */
+  border-radius: 12px; 
+  
+  margin-bottom: 2px;
+  transition: background-color 0.1s ease;
+}
+
+.search-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Clean slate highlight on selection hover */
+.search-item:hover,
+.search-item:focus {
+  background-color: #f3f3f3;
+  outline: none;
+}
+
+.search-item:active {
+  background-color: #ebebeb;
+}
+
+/* =========================
+   AVATARS & TEXT TRUNCATION
+========================= */
+.search-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%; 
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.search-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-profile-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #191919;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-profile-handle {
+  font-size: 12px;
+  color: #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* =========================
+   SYSTEM STATE NOTIFICATIONS
+========================= */
+.search-status-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 16px;
+  color: #666666;
+  font-size: 13px;
+}
+
+.search-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #e0e0e0;
+  border-top: 2px solid #666666;
+  border-radius: 50%;
+  animation: searchSpin 0.7s linear infinite;
+}
+
+@keyframes searchSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================
+   MOBILE PORT SAFETY FALLBACKS
+========================= */
+@media (max-width: 600px) {
+  .search-container,
+  .search-container:focus-within {
+    max-width: 100%;
+  }
+}
