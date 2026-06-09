@@ -3,82 +3,107 @@ import "./ProfileDropdown.css";
 import { useNavigate } from "react-router-dom";
 import userService from "../services/UserService";
 import { useAuth } from "../context/AuthContext";
+
 const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-const navigate = useNavigate();
-const { user, signout } = useAuth();
+  const navigate = useNavigate();
+
+  const { user, signout } = useAuth();
+
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setDropdownOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // HTTP LOGOUT HANDLER
+  // Normalize gender value
+  const gender = user?.profileGender?.toLowerCase();
+
+  const avatarStyle = {
+    backgroundImage: user?.avatar
+      ? `url(${user.avatar})`
+      : gender === "female"
+      ? `url(https://cdn.vectorstock.com/i/1000v/44/13/grey-female-avatar-placeholder-vector-38594413.jpg)`
+      : `url(https://cdn.vectorstock.com/i/1000v/54/69/male-user-icon-vector-8865469.jpg)`,
+  };
+
   const handleLogout = async () => {
-    setDropdownOpen(false); // Instantly close the dropdown panel
+    setDropdownOpen(false);
 
     try {
-      // 1. Fire the network HTTP request to your backend server API endpoint
-      const response = await userService.signout(); // Call the signout function from UserService which makes the API call to backend
-
-      if (response.ok) {
-        console.log("Logged out successfully from backend server.");
-      } else {
-        console.warn("Backend session clearance returned an error status.");
-      }
+      await userService.signout();
     } catch (error) {
-      console.error("Network connection error encountered during logout:", error);
+      console.error("Logout API error:", error);
     } finally {
-      // 2. Clear client-side application storage (Tokens, User Profiles, Settings)
+      localStorage.removeItem("user");
       localStorage.removeItem("token");
-      sessionStorage.clear();
 
-      // 3. Kick the user out to your login routing page
-      // If you are using React Router, use navigate("/login") instead!
+      signout();
+
       navigate("/signin");
     }
   };
 
   return (
     <div className="pd-container" ref={dropdownRef}>
-      <div 
-        className={`pd-avatar ${dropdownOpen ? "pd-active" : ""}`} 
+      <div
+        className={`pd-avatar ${dropdownOpen ? "pd-active" : ""}`}
         onClick={toggleDropdown}
         role="button"
         aria-haspopup="true"
         aria-expanded={dropdownOpen}
+        style={avatarStyle}
       >
-     <span className="pd-avatar-placeholder">
-  {user?.name?.charAt(0) || "U"}
-</span>
+        {/* {!user?.avatar && (
+          <span className="pd-avatar-placeholder">
+            {user?.name?.charAt(0)?.toUpperCase() || "U"}
+          </span>
+        )} */}
       </div>
-      
+
       {dropdownOpen && (
         <div className="pd-dropdown-card">
           <div className="pd-header">
-           <p className="pd-user-name">
-  {user?.name || "Guest User"}
-</p>
-<p className="pd-user-handle">
-  @{user?.username || "guest"}
-</p>
+            <p className="pd-user-name">
+              {user?.name || "Guest User"}
+            </p>
+
+            <p className="pd-user-handle">
+              @{user?.username || "guest"}
+            </p>
           </div>
+
           <hr className="pd-divider" />
+
           <ul className="pd-menu-list">
-            <li onClick={() => setDropdownOpen(false)}>👤 View Profile</li>
-            <li onClick={() => setDropdownOpen(false)}>⚙️ Settings</li>
-            
-            {/* Hooked up to the async network trigger function */}
-            <li onClick={handleLogout} className="pd-logout-item">
+            <li onClick={() => setDropdownOpen(false)}>
+              👤 View Profile
+            </li>
+
+            <li onClick={() => setDropdownOpen(false)}>
+              ⚙️ Settings
+            </li>
+
+            <li
+              onClick={handleLogout}
+              className="pd-logout-item"
+            >
               🚪 Sign Out
             </li>
           </ul>
