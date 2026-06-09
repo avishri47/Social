@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ProfileDropdown.css";
 import { useNavigate } from "react-router-dom";
 import userService from "../services/UserService";
-
+import { useAuth } from "../context/AuthContext";
 const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 const navigate = useNavigate();
+const { user, signout } = useAuth();
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
@@ -56,14 +57,20 @@ const navigate = useNavigate();
         aria-haspopup="true"
         aria-expanded={dropdownOpen}
       >
-        <span className="pd-avatar-placeholder">U</span>
+     <span className="pd-avatar-placeholder">
+  {user?.name?.charAt(0) || "U"}
+</span>
       </div>
       
       {dropdownOpen && (
         <div className="pd-dropdown-card">
           <div className="pd-header">
-            <p className="pd-user-name">Current User</p>
-            <p className="pd-user-handle">@current_user</p>
+           <p className="pd-user-name">
+  {user?.name || "Guest User"}
+</p>
+<p className="pd-user-handle">
+  @{user?.username || "guest"}
+</p>
           </div>
           <hr className="pd-divider" />
           <ul className="pd-menu-list">

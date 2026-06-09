@@ -48,7 +48,6 @@ const SignIn = () => {
 
       // store only useful user data (safe fallback included)
       authCtx.signin(response?.data?.user || response);
-
       console.log("SignIn Success:", response);
 
       setIsSuccess(true);
