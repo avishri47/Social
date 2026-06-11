@@ -8,8 +8,8 @@ const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  const { user, signout } = useAuth();
+const [showProfileModal, setShowProfileModal] = useState(false);
+  const { user, signout, avatarUrl } = useAuth();
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
@@ -35,14 +35,12 @@ const ProfileDropdown = () => {
   // Normalize gender value
   const gender = user?.profileGender?.toLowerCase();
 
-  const avatarStyle = {
-    backgroundImage: user?.avatar
-      ? `url(${user.avatar})`
-      : gender === "female"
-      ? `url(https://cdn.vectorstock.com/i/1000v/44/13/grey-female-avatar-placeholder-vector-38594413.jpg)`
-      : `url(https://cdn.vectorstock.com/i/1000v/54/69/male-user-icon-vector-8865469.jpg)`,
+  
+ const avatarStyle = {
+    backgroundImage: 
+       `url(${avatarUrl})`
+    
   };
-
   const handleLogout = async () => {
     setDropdownOpen(false);
 
@@ -92,9 +90,14 @@ const ProfileDropdown = () => {
           <hr className="pd-divider" />
 
           <ul className="pd-menu-list">
-            <li onClick={() => setDropdownOpen(false)}>
-              👤 View Profile
-            </li>
+           <li
+  onClick={() => {
+    setDropdownOpen(false);
+    navigate("/profile");
+  }}
+>
+  👤 View Profile
+</li>
 
             <li onClick={() => setDropdownOpen(false)}>
               ⚙️ Settings
@@ -109,7 +112,9 @@ const ProfileDropdown = () => {
           </ul>
         </div>
       )}
+      
     </div>
+    
   );
 };
 

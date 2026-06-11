@@ -7,8 +7,8 @@ import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
 import SignIn from "./components/SignIn/SignIn";
 import ProtectedRoute from "./components/Route/ProtectedRoute";
-
 import { AuthProvider } from "./context/AuthContext"; // ✅ ADD THIS
+import ProfilePage from "./pages/Profile/Profile";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider> {/* ✅ WRAP EVERYTHING */}
@@ -22,6 +22,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </ProtectedRoute>
           }
         />
+          <Route
+    path="/profile"
+    element={<ProfilePage />}
+  />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<SignIn />} />
