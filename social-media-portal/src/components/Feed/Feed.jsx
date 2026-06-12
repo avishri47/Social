@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Feed.css";
 import PostCreator from "../PostCreator/PostCreator";
+import { useAuth } from "../../context/AuthContext";
 
 const INITIAL_FEEDS = [
   {
@@ -20,14 +21,20 @@ const INITIAL_FEEDS = [
   }
 ];
 
-const STORIES = [
-  { id: 1, name: "Your Story", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", isUser: true },
-  { id: 2, name: "alex_v", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" },
-  { id: 3, name: "james_k", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" }
-];
+// Removed global avatarUrl and the static STORIES array from here...
 
 const Feed = () => {
+  // 1. ✅ Call the hook cleanly at the top of your component body
+  const { avatarUrl } = useAuth(); 
+
   const [posts, setPosts] = useState(INITIAL_FEEDS);
+
+  // 2. ✅ Re-create the STORIES array here so it can safely use the dynamic avatarUrl
+  const STORIES = [
+    { id: 1, name: "Your Story", avatar: `${avatarUrl}`, isUser: true }, // Added isUser flag just in case
+    { id: 2, name: "alex_v", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" },
+    { id: 3, name: "james_k", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" }
+  ];
 
   const handleLike = (postId) => {
     setPosts((prevPosts) =>
@@ -44,7 +51,6 @@ const Feed = () => {
     );
   };
 
-  // Callback function triggered whenever PostCreator pushes a new post object up
   const handleAddNewPost = (newPostObj) => {
     setPosts([newPostObj, ...posts]);
   };

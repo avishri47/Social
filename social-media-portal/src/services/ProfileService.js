@@ -17,7 +17,14 @@ const updateProfile = async (profileData, id) => {
     throw error.response?.data || "Profile update failed";
   }
 };
+const uploadAvatar = async (formData) => {
+  const response = await fetch("/api/upload-avatar", {
+    method: "POST",
+    body: formData,
+  });
 
+  return response.json();
+};
 export default {
   getProfileByUserId,
   updateProfile,

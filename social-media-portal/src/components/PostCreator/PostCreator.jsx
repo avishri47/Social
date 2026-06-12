@@ -1,10 +1,11 @@
 import React, { useState, useRef } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const PostCreator = ({ onPostSubmit }) => {
   const [newPostText, setNewPostText] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
-
+const {avatarUrl} = useAuth(); // Access avatarUrl from AuthContext
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -36,13 +37,12 @@ const PostCreator = ({ onPostSubmit }) => {
     setNewPostText("");
     setSelectedImage(null);
   };
-
   return (
     <div className="composer-card">
       <form onSubmit={handleSubmitPost}>
         <div className="composer-main-row">
           <img 
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" 
+            src={avatarUrl} 
             alt="User profile" 
             className="post-user-avatar" 
           />
