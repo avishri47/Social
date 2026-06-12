@@ -105,7 +105,7 @@ setIsSuccess(false);
             <input
               type="radio"
               name="gender"
-              value="Male"
+              value="male"
               onChange={handleChange}
             /> 
             Male
@@ -115,7 +115,7 @@ setIsSuccess(false);
             <input
               type="radio"
               name="gender"
-              value="Female"
+              value="female"
               onChange={handleChange}
             />
             Female

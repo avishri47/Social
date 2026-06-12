@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 const SignIn = () => {
   const authCtx = useAuth();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -46,8 +47,10 @@ const SignIn = () => {
 
       const response = await userService.signin(payload);
 
-      // store only useful user data (safe fallback included)
-      authCtx.signin(response?.data?.user || response);
+      const user = response?.data?.user || response;
+
+      authCtx.signin(user);
+
       console.log("SignIn Success:", response);
 
       setIsSuccess(true);
@@ -57,7 +60,6 @@ const SignIn = () => {
     } catch (error) {
       console.log("SignIn Error:", error);
 
-      // IMPORTANT FIX: never store raw Error object
       setErrMessage(error?.message || "Login failed");
       setMessage("");
       setIsSuccess(false);
@@ -78,14 +80,27 @@ const SignIn = () => {
           style={styles.input}
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          style={styles.input}
-        />
+        <div style={styles.passwordContainer}>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            style={styles.passwordInput}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            style={styles.eyeButton}
+            aria-label={
+              showPassword ? "Hide password" : "Show password"
+            }
+          >
+            {showPassword ? "🙈" : "👁"}
+          </button>
+        </div>
 
         <button type="submit" style={styles.signInButton}>
           Sign In
@@ -95,7 +110,13 @@ const SignIn = () => {
           <p style={styles.err_msg}>{errMsg}</p>
         ) : (
           message && (
-            <p style={{ color: "green", fontWeight: "bold" }}>
+            <p
+              style={{
+                color: "green",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
               {message}
             </p>
           )
@@ -145,6 +166,33 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "6px",
     outline: "none",
+  },
+
+  passwordContainer: {
+    position: "relative",
+    marginBottom: "22px",
+  },
+
+  passwordInput: {
+    width: "100%",
+    padding: "10px 40px 10px 10px",
+    fontSize: "15px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    outline: "none",
+    boxSizing: "border-box",
+  },
+
+  eyeButton: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    fontSize: "18px",
+    padding: 0,
   },
 
   button: {
