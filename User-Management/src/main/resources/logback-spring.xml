@@ -1,35 +1,24 @@
-<configuration>
+<appender name="SPLUNK" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
 
-    <appender name="SPLUNK" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+    <url>https://localhost:8088</url>
+    <token>2ff4989f-cd5c-45f8-a946-94abba1fefea</token>
 
-        <url>https://localhost:8088</url>
+    <index>main</index>
+    <source>spring-boot-app</source>
+    <sourcetype>_json</sourcetype>
 
-        <token>2ff4989f-cd5c-45f8-a946-94abba1fefea</token>
+    <messageFormat>json</messageFormat>
 
-        <index>main</index>
+    <batch_size_count>5</batch_size_count>
+    <batch_size_interval>2</batch_size_interval>
 
-        <source>spring-boot-app</source>
-        <sourcetype>_json</sourcetype>
+    <disableCertificateValidation>true</disableCertificateValidation>
 
-        <messageFormat>json</messageFormat>
+    <!-- ✅ REQUIRED FIX -->
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <pattern>
+            {"timestamp":"%d","level":"%-5level","thread":"%thread","logger":"%logger","message":"%msg"}%n
+        </pattern>
+    </layout>
 
-        <batch_size_count>5</batch_size_count>
-        <batch_size_interval>2</batch_size_interval>
-
-        <!-- IMPORTANT for your setup -->
-        <disableCertificateValidation>true</disableCertificateValidation>
-
-    </appender>
-
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d %-5level %logger - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="SPLUNK"/>
-    </root>
-
-</configuration>
+</appender>
