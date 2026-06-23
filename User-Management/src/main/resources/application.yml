@@ -1,5 +1,6 @@
 server:
-   port: 9090
+  port: 9090
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/user_mgmt
@@ -15,6 +16,33 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  devtools:
+    livereload:
+      enabled: true
+
 jwt:
   secret: a8f3c2d91b7e4f6a9c1d2e3f4a5b6c7d8e9f00112233445566778899aabbccdd
   expiration: 3600000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    # This sorts your endpoints alphabetically by HTTP method in the UI
+    operations-sorter: alpha
+  # ⚠️ CHANGE THIS to your actual Java base package name where controllers live
+  packages-to-scan: com.social.usermgmt.controller
+
+upload:
+  avatar:
+    dir: uploads/avatar
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
