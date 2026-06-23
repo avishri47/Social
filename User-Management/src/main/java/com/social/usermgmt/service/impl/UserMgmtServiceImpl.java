@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -51,11 +52,18 @@ public class UserMgmtServiceImpl implements UserMgmtService {
         user = userRepository.save(user);
         Profile profile = new Profile();
         profile.setUserId(user.getId());
-        profile.setUsername(request.name());
-        profile.setDisplayName(request.name());
+
+        String[] parts =  request.name().trim().split("\\s+");
+
+
+        String firstName = parts.length > 0 ? parts[0] : "";
+        String lastName  = parts.length > 1 ? parts[parts.length - 1] : "";
+        profile.setfName(firstName);
+        profile.setlName(lastName);
         profile.setGender(request.gender());
         profile.setDob(request.dob());
-
+        profile.setMobile(request.mobile());
+        profile.setEmail(request.email());
         profileRepository.save(profile);
 
         return new SignupResponse(user.getId(),"Signed up successfully");
@@ -63,15 +71,21 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
     @Override
     public SigninResponse signin(SigninRequest request) {
-       User user = userRepository.findByEmail(request.email()).orElseThrow(()->new InvalidCredentialsException("Invalid id"));
+       User user = userRepository.findByEmail(request.email()).orElseThrow(()->new InvalidCredentialsException("id or password is wrong"));
 
         if ( !passwordEncoder.matches(request.password(), user.getPassword())) {
      throw new InvalidCredentialsException("Invalid credentials");
         }
         String accessToken =
                 jwtUtil.generateToken(request.email());
-
-        return new SigninResponse(user.getId(),"Signed In successfully",accessToken);
+        String profilePicUrl = null;
+        String gender = null;
+//        Profile profile = profileRepository.findByUserId(user.getId())
+//                .orElseThrow(() -> new RuntimeException("account dont exist or create a new account"));
+        Profile profile = profileRepository.findByUserId(user.getId()).orElseGet(Profile::new);
+       profilePicUrl = profile.getAvatarUrl();
+         gender = profile.getGender();
+        return new SigninResponse(user.getId(), user.getName(), profilePicUrl,gender,"Signed In successfully",accessToken);
     }
 
     @Override

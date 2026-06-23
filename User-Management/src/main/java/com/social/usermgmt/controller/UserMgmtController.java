@@ -2,7 +2,6 @@ package com.social.usermgmt.controller;
 
 import com.social.usermgmt.dto.*;
 import com.social.usermgmt.service.UserMgmtService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+
 
 @RestController
 @RequestMapping("/api/users")
