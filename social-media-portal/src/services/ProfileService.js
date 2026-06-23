@@ -17,15 +17,30 @@ const updateProfile = async (profileData, id) => {
     throw error.response?.data || "Profile update failed";
   }
 };
-const uploadAvatar = async (formData) => {
-  const response = await fetch("/api/upload-avatar", {
-    method: "POST",
-    body: formData,
-  });
 
-  return response.json();
+const uploadAvatar = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axiosClient.post(
+      "/profiles/upload-avatar",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || "Avatar upload failed";
+  }
 };
+
 export default {
   getProfileByUserId,
   updateProfile,
+  uploadAvatar,
 };
