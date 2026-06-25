@@ -5,7 +5,7 @@ const PostCreator = ({ onPostSubmit }) => {
   const [newPostText, setNewPostText] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
-const {avatarUrl} = useAuth(); // Access avatarUrl from AuthContext
+const {user,avatarUrl} = useAuth(); // Access avatarUrl from AuthContext
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -20,9 +20,9 @@ const {avatarUrl} = useAuth(); // Access avatarUrl from AuthContext
     const createdPost = {
       id: Date.now(),
       author: {
-        name: "Current User",
-        username: "current_user",
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+        name: user.name,
+        username: user.username,
+        avatar: avatarUrl,
         verified: false
       },
       timestamp: "Just now",

@@ -18,19 +18,19 @@ const updateProfile = async (profileData, id) => {
   }
 };
 
-const uploadAvatar = async (file) => {
+const uploadAvatar = async (id,file) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await axiosClient.post(
-      "/profiles/upload-avatar",
+  const response = await axiosClient.post(
+      `/profiles/upload-avatar/${id}`,
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+       {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  }
     );
 
     return response.data;

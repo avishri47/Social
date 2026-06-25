@@ -19,7 +19,7 @@ const Header = () => {
           <div className="menu" onClick={toggleSidebar}>
             ☰
           </div>
-          <div className="logo">Chapri Party</div>
+          <div className="logo">Connecting World</div>
         </div>
 
         {/* Center: Search */}
