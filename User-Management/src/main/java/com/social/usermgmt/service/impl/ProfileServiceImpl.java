@@ -15,10 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +81,9 @@ private String UPLOAD_DIR;
     }
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file,Long id) {
         // Create directory if not exists
+        log.info("Uploading to directory {}", UPLOAD_DIR);
         File directory = new File(UPLOAD_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -91,7 +98,23 @@ private String UPLOAD_DIR;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        String fileUrl = ServletUriComponentsBuilder
 
-        return "uploaded successfully: " + fileName;
+                .fromPath("/uploads/avatar/")
+                .path(fileName)
+                .toUriString();
+        log.info("file url {}", fileUrl);
+        Profile profile = profileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+log.info("profile found with id {}", profile.getId());
+        profile.setAvatarUrl(fileUrl);
+        profileRepository.save(profile);
+
+        return fileUrl;
     }
+
+
+
+
+
 }
