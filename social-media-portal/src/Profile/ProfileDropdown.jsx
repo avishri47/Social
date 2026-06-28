@@ -93,7 +93,7 @@ const [showProfileModal, setShowProfileModal] = useState(false);
            <li
   onClick={() => {
     setDropdownOpen(false);
-    navigate("/profile");
+    navigate("/profile/" + user?.userId);
   }}
 >
   👤 View Profile

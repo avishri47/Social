@@ -39,8 +39,17 @@ const uploadAvatar = async (id,file) => {
   }
 };
 
+
+const searchPeople = async (query, userId) => {
+  const response = await axiosClient.get(`/profiles/search?q=${encodeURIComponent(query)}&userId=${userId}`);
+  return response.data;
+};
+
+    
+
 export default {
   getProfileByUserId,
   updateProfile,
   uploadAvatar,
+  searchPeople,
 };

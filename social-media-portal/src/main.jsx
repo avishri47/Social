@@ -14,18 +14,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider> {/* ✅ WRAP EVERYTHING */}
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <App />
-            </ProtectedRoute>
-          }
-        />
-          <Route
-    path="/profile"
-    element={<ProfilePage />}
-  />
+        <Route path="/" element={ <ProtectedRoute> <App /> </ProtectedRoute> } />
+        <Route path="/profile/:userId" element={<ProfilePage />} />        
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<SignIn />} />

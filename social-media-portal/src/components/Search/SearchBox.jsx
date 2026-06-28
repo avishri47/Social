@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./SearchBox.css";
-
+import { useAuth } from "../../context/AuthContext";
+import  profileService  from "../../services/ProfileService";
 const SearchBox = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-
+    const {user,setUser} = useAuth();
   useEffect(() => {
     const timeout = setTimeout(() => {
       searchUsers();
@@ -23,10 +24,11 @@ const SearchBox = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(
-        `/api/users/search?query=${encodeURIComponent(query)}`
-      );
-      setUsers(response.data);
+     
+
+      const response = await profileService.searchPeople(query, user.userId);
+      console.log(response);
+      setUsers(response);
     } catch (error) {
       console.error("Search failed", error);
     } finally {
@@ -47,7 +49,10 @@ const SearchBox = () => {
           type="text"
           placeholder="Search friends..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {setQuery(e.target.value);
+            console.log("Search query:", e.target.value);
+          }
+          }
           className="search-input"
         />
         {query && (
@@ -68,38 +73,39 @@ const SearchBox = () => {
           )}
 
           {!loading &&
-            users.map((user) => (
+            users?.map((user) => (
               <div
-                key={user.id}
+                key={user.userId}
                 className="search-item"
                 role="button"
                 tabIndex={0}
-                onClick={() => handleProfileNavigation(user.id)}
+                onClick={() => handleProfileNavigation(user.userId)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    handleProfileNavigation(user.id);
+                    console.log("Navigating to profile of userId:", user.userId);
+                    handleProfileNavigation(user.userId);
                   }
                 }}
               >
                 <img
-                  src={user.profilePic || "https://via.placeholder.com/40"}
-                  alt={user.name}
+                  src={user.avatarUrl || null}
+                  alt={user.fName}
                   className="search-avatar"
                   onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/40";
+                    e.target.src = null;
                   }}
                 />
 
                 <div className="search-item-content">
-                  <div className="search-profile-name">{user.name}</div>
-                  <div className="search-profile-handle">@{user.username}</div>
+                  <div className="search-profile-name">{user.fName} {user.lName}</div>
+                  <div className="search-profile-handle">@{user.status}</div>
                 </div>
               </div>
             ))}
 
-          {!loading && users.length === 0 && (
-            <div className="search-status-msg">No users found</div>
+          {!loading && users?.length === 0 && (
+            <div className="search-status-msg">No Person found</div>
           )}
         </div>
       )}

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import ProfileView from "../../Profile/ProfileView";
 import profileService from "../../services/ProfileService";
-
+import { useParams } from "react-router-dom";
 const ProfilePage = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
-
+  const { userId } = useParams();
+const isOwnProfile = Number(userId) === user?.userId;
   const fields = [
     // { name: "id", label: "ID" },
     // { name: "userId", label: "User ID" },
@@ -14,7 +15,6 @@ const ProfilePage = () => {
     { name: "lName", label: "Last Name" },
     { name: "email", label: "Email", type: "email" },
     { name: "mobile", label: "Mobile" },
-    { name: "avatarUrl", label: "Avatar URL" },
     { name: "city", label: "City" },
     { name: "country", label: "Country" },
     //{ name: "dateOfBirth", label: "Date of Birth", type: "date" },
@@ -25,12 +25,14 @@ const ProfilePage = () => {
 
   useEffect(() => {
     console.log("ProfilePage mounted with user:", user);
-     console.log("Getting profile for userId:", user?.userId);
+     console.log("Getting profile for userId:", userId);
     const fetchProfile = async () => {
       try {
          
 
-        const response = await profileService.getProfileByUserId(user?.userId);
+        const response = await profileService.getProfileByUserId(userId);
+        console.log("Fetched profile:", response);
+        response.avatarUrl  == null ? response.avatarUrl = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" : response.avatarUrl = response.avatarUrl;
         setProfile(response);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -63,6 +65,7 @@ const ProfilePage = () => {
       fields={fields}
       initialData={profile}
       onSave={handleSave}
+       isOwnProfile={isOwnProfile}
     />
   );
 };

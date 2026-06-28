@@ -3,7 +3,7 @@ import "./ProfileView.css";
 import { useAuth } from "../context/AuthContext";
 import profileService from "../services/ProfileService";
 
-const ProfileView = ({ initialData, fields, onSave }) => {
+const ProfileView = ({ initialData, fields, onSave ,  isOwnProfile}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(initialData || {});
   const { avatarUrl, setAvatar } = useAuth();
@@ -67,11 +67,8 @@ const ProfileView = ({ initialData, fields, onSave }) => {
   };
 
   const finalAvatar =
-    avatarUrl ||
-    formData?.avatarUrl ||
-    formData?.profilePicture ||
-    formData?.imageUrl ||
-    "/default-avatar.png";
+   
+    formData?.avatarUrl ;
 
   return (
     <div className="profile-container">
@@ -85,11 +82,11 @@ const ProfileView = ({ initialData, fields, onSave }) => {
               alt="Profile"
               className="profile-avatar clickable-avatar"
               onError={(e) => {
-                e.target.src = "/default-avatar.png";
+                e.target.src = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png";
               }}
             />
           </label>
-
+ {isOwnProfile && (
           <input
             id="avatar-upload"
             type="file"
@@ -98,6 +95,8 @@ const ProfileView = ({ initialData, fields, onSave }) => {
             style={{ display: "none" }}
             onChange={handleAvatarChange}
           />
+ )
+ }
         </div>
 
         {/* Header */}
@@ -107,8 +106,8 @@ const ProfileView = ({ initialData, fields, onSave }) => {
             <p>Manage your personal details</p>
           </div>
 
-          {!isEditing ? (
-            <button
+          { isOwnProfile && (!isEditing ? (
+            <button  
               className="btn btn-primary"
               onClick={() => setIsEditing(true)}
             >
@@ -130,7 +129,7 @@ const ProfileView = ({ initialData, fields, onSave }) => {
                 Save
               </button>
             </div>
-          )}
+          ))}
         </div>
 
         {/* Fields */}
